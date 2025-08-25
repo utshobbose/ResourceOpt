@@ -1,6 +1,6 @@
 # tests/test_dq.py
 import pandas as pd
-from cropintel.resourceopt.dq.checks import coverage
+from cropintel.resrce_opt.dq.checks import coverage
 
 def test_coverage_pass():
     df = pd.DataFrame({
