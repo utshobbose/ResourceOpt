@@ -1,0 +1,35 @@
+version: 1
+entities:
+  district:
+    fields:
+      code: {type: string, required: true, pattern: "^[0-9]{2,4}$"}
+      name: {type: string, required: true}
+      geom: {type: wkb, required: true, srid: 4326}
+  signals:
+    keys: [district_code, season, year]
+    fields:
+      district_code: {type: string, required: true}
+      season: {type: string, required: true, allowed: ["aman","boro","aus"]}
+      year: {type: int, required: true, range: [1990, 2100]}
+      disease_risk_index: {type: float, required: true, range: [0.0, 1.0]}
+      rainfall_mm: {type: float, required: true, min: 0.0}
+      rainfall_anomaly_pos: {type: float, required: true, range: [0.0, 1.0]}
+      prior_deficit_kg: {type: float, required: true, min: 0.0}
+      soil_fertility_index: {type: float, required: true, range: [0.0, 1.0]}
+      yield_responsiveness_index: {type: float, required: true, range: [0.0, 1.0]}
+      cultivated_area_ha: {type: float, required: true, min: 0.0}
+      irrigation_coverage_pct: {type: float, required: true, range: [0.0, 100.0]}
+    slas:
+      freshness_days: 14
+      coverage_target_pct: 98
+  allocation_input:
+    keys: [district_code, season, year, resource]
+    fields:
+      district_code: {type: string, required: true}
+      season: {type: string, required: true, allowed: ["aman","boro","aus"]}
+      year: {type: int, required: true}
+      resource: {type: string, required: true, allowed: ["urea","dap","mop","seed_aman","seed_boro"]}
+      requested_allocation_kg: {type: float, required: true, min: 0.0}
+      feasible_demand_kg: {type: float, required: true, min: 0.0}
+    rules:
+      requested_leq_cap: "requested_allocation_kg <= 1.2 * feasible_demand_kg"
